@@ -150,6 +150,33 @@ public class WeightedGraph {
         return path;
     }
 
+    public WeightedGraph minimumSpanningTree(){
+        var tree = new WeightedGraph();
+
+        PriorityQueue<Edge> queue = new PriorityQueue<>(
+                (a,b) -> a.weight - b.weight
+        );
+        var startNode = nodeMap.values().iterator().next();
+        queue.addAll(startNode.edges);
+        tree.addVertex(startNode.label);
+
+        while(tree.nodeMap.size() < nodeMap.size()){
+            var minEdge = queue.poll();
+            var tempNode = new Node(minEdge.to);
+            if(!tree.nodeMap.containsKey(minEdge.to)){
+                tree.addVertex(minEdge.to);
+                tree.addEdge(minEdge.from,minEdge.to,minEdge.weight);
+
+                for(var edge : nodeMap.get(minEdge.to).edges){
+                    if(!tree.nodeMap.containsKey(edge.to))
+                        queue.offer(edge);
+                }
+            }
+        }
+
+        return tree;
+    }
+
 
     public void print(){
         for(var vertex : nodeMap.keySet()){
